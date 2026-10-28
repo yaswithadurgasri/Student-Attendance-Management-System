@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartAttend - Create Account</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f0f4ff, #f9f5ff);
+  font-family: Arial, sans-serif;
+  color: #151515;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 38px 30px;
+  background: white;
+  border-radius: 26px;
+  box-shadow: 0 15px 50px rgba(48,55,100,0.10);
+}
+
+.logo {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  color: white;
+  font-size: 38px;
+  background: linear-gradient(135deg, #4778ff, #9b16ed);
+}
+
+h1 {
+  text-align: center;
+  font-size: 36px;
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #737783;
+  font-size: 17px;
+  margin-bottom: 42px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #dedfe5;
+  border-radius: 13px;
+  padding: 0 14px;
+  margin-bottom: 27px;
+}
+
+.field span {
+  font-size: 21px;
+  color: #969ba8;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  padding: 17px 0;
+  font-size: 15px;
+  background: transparent;
+  color: #151515;
+}
+
+.field select {
+  appearance: auto;
+}
+
+.eye {
+  cursor: pointer;
+  user-select: none;
+}
+
+button {
+  width: 100%;
+  padding: 17px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(100deg, #347df5, #a20bea);
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 8px 20px #7948ed30;
+}
+
+.signup {
+  text-align: center;
+  margin: 28px 0 0;
+  color: #626775;
+  font-size: 14px;
+}
+
+a {
+  color: #376ce8;
+  text-decoration: none;
+}
+
+@media(max-width: 360px) {
+  .signup-card {
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="signup-card">
+
+  <div class="logo">🎓</div>
+
+  <h1>Create Account</h1>
+  <p class="subtitle">Sign up to get started</p>
+
+  <form id="signupForm">
+
+    <label for="fullname">Full Name</label>
+    <div class="field">
+      <span>♙</span>
+      <input id="fullname" type="text"
+        placeholder="Enter your full name" required>
+    </div>
+
+    <label for="username">Username</label>
+    <div class="field">
+      <span>♙</span>
+      <input id="username" type="text"
+        placeholder="Choose a username" required>
+    </div>
+
+    <label for="email">Email</label>
+    <div class="field">
+      <span>✉</span>
+      <input id="email" type="email"
+        placeholder="Enter your email" required>
+    </div>
+
+    <label for="password">Password</label>
+    <div class="field">
+      <span>♙</span>
+      <input id="password" type="password"
+        placeholder="Create a password" required>
+      <span class="eye" onclick="togglePassword('password', this)">◎</span>
+    </div>
+
+    <label for="confirmPassword">Confirm Password</label>
+    <div class="field">
+      <span>♙</span>
+      <input id="confirmPassword" type="password"
+        placeholder="Confirm your password" required>
+      <span class="eye" onclick="togglePassword('confirmPassword', this)">◎</span>
+    </div>
+
+    <label for="role">Role</label>
+    <div class="field">
+      <span>♙</span>
+      <select id="role" required>
+        <option valie="Admin">admi</option>
+        <option value="staff">Staff</option>
+        <option value="student">Student</option>
+      </select>
+    </div>
+
+    <button type="submit">Create Account</button>
+
+  </form>
+
+  <p class="signup">
+    Already have an account?
+    <a href="index.html">Sign in</a>
+  </p>
+
+</div>
+
+<script>
+function togglePassword(id, icon) {
+  const field = document.getElementById(id);
+
+  if (field.type === "password") {
+    field.type = "text";
+    icon.textContent = "◉";
+  } else {
+    field.type = "password";
+    icon.textContent = "◎";
+  }
+}
+
+document.getElementById("signupForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  alert("Signup page design is ready. Connect a backend to create accounts.");
+});
+</script>
+</body>
+  </html>
+      
