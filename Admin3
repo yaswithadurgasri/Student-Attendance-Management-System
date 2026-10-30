@@ -1,0 +1,141 @@
+
+<!-- DEPARTMENT STUDENT COUNTS & RECENT ACTIVITY -->
+
+<div class="section-title">
+ Department student counts &amp; recent activity
+</div>
+
+<div class="row g-3">
+
+ <!-- STUDENTS BY DEPARTMENT -->
+
+ <div class="col-12 col-xl-6">
+
+  <div class="panel">
+
+   <div class="panelhead">
+
+    <div>
+     <h3>Students by Department</h3>
+
+     <div class="hint">
+      See which departments have more or fewer students
+     </div>
+    </div>
+
+   </div>
+
+   <div id="deptList"></div>
+
+  </div>
+
+ </div>
+
+ <!-- RECENT ACTIVITY -->
+
+ <div class="col-12 col-xl-6">
+
+  <div class="panel">
+
+   <div class="panelhead">
+
+    <div>
+     <h3>Recent Activity</h3>
+
+     <div class="hint">
+      Latest system updates
+     </div>
+    </div>
+
+   </div>
+
+   <div class="activity">
+
+    <span class="staticon blue">
+     <i class="bi bi-person-plus"></i>
+    </span>
+
+    <div>
+     <div class="desc">
+      New student profile added
+     </div>
+
+     <small>
+      CME department · 12 minutes ago
+     </small>
+    </div>
+
+   </div>
+
+   <div class="activity">
+
+    <span class="staticon green">
+     <i class="bi bi-calendar-check"></i>
+    </span>
+
+    <div>
+     <div class="desc">
+      Attendance records updated
+     </div>
+
+     <small>
+      Staff account · 35 minutes ago
+     </small>
+    </div>
+
+   </div>
+
+   <div class="activity">
+
+    <span class="staticon orange">
+     <i class="bi bi-chat-square-dots"></i>
+    </span>
+
+    <div>
+     <div class="desc">
+      New complaint received
+     </div>
+
+     <small>
+      Student support · 1 hour ago
+     </small>
+    </div>
+
+   </div>
+
+  </div>
+
+ </div>
+
+</div>
+
+<!-- COMPLAINT OVERVIEW -->
+
+<div class="section-title">
+ Complaint overview
+</div>
+
+<div class="panel">
+
+ <div class="panelhead">
+
+  <div>
+   <h3>Recent complaints</h3>
+
+   <div class="hint">
+    Student and staff issues needing attention
+   </div>
+  </div>
+
+  <button class="gradient"
+   onclick="showPage('complaints')">
+   Open complaint center
+  </button>
+
+ </div>
+
+ <div id="overviewComplaints"></div>
+
+</div>
+
+</section>
