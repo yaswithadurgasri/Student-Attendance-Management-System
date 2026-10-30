@@ -10,11 +10,32 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('students', '0001_initial'),
+        ('teachers', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
+            name='Subject',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('subject_code', models.CharField(max_length=20, unique=True)),
+                ('subject_name', models.CharField(max_length=100)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Attendance',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('date', models.DateField()),
+                ('status', models.CharField(choices=[('PRESENT', 'Present'), ('ABSENT', 'Absent')], max_length=10)),
+                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.student')),
+                ('teacher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='teachers.teacher')),
+                ('subject', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='attendance.subject')),
+            ],
+            options={
+                'constraints': [models.UniqueConstraint(fields=('student', 'subject', 'date'), name='unique_student_subject_date')],
             name='AttendanceSession',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

@@ -1,9 +1,24 @@
+# Python
 venv/
 env/
+.venv/
 __pycache__/
 *.pyc
+
+# Django
 db.sqlite3
-.env
 *.log
-.vscode/
 staticfiles/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# Database backup
+db_backup.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
