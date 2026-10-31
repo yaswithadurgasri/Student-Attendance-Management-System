@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'teachers',
     'attendance',
     'reports',
-    'admindashboard',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
