@@ -9,4 +9,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('attendance/', include('attendance.urls')),
+    path('admin-dashboard/', 
+include('dashboard.urls')),
 ]
