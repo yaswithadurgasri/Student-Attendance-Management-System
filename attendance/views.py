@@ -64,8 +64,7 @@ def teacher_attendance(request):
                 )
 
         messages.success(request, 'Attendance saved successfully!')
-        return redirect('teacher_attendance')
-
+        return redirect('attendance:teacher_attendance')
     return render(
         request,
         'attendance/teacher_attendance.html',
