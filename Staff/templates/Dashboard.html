@@ -279,6 +279,7 @@
                             <th>Attendance</th>
                             <th>Today's Status</th>
                             <th>Behaviour Remarks</th>
+                            <th>performance</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -303,6 +304,12 @@
 
                             <td>
                                 {{ student.behaviour_remarks|default:"No remarks" }}
+                                <td>
+    <a href="{% url 'staff:add_performance' student.pk %}"
+       class="btn btn-sm btn-outline-primary">
+        Add Performance
+    </a>
+                                </td>
                             </td>
 
                             <td>
@@ -323,7 +330,7 @@
                         {% empty %}
 
                         <tr>
-                            <td colspan="6" class="empty-message">
+                            <td colspan="7" class="empty-message">
                                 No students assigned to your section yet.
                             </td>
                         </tr>
