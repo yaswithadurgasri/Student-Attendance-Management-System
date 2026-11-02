@@ -6,5 +6,7 @@ urlpatterns = [
         'dashboard/',
         views.student_dashboard,
         name='student_dashboard'
+        'complaint/'
+        views.student_complaint'
     ),
 ]
