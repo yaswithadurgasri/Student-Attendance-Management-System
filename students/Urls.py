@@ -9,13 +9,16 @@ urlpatterns = [
         'complaint/',
         views.student_complaint'
         name='students_complwints'
-            
         'correction/',
-            views.attandance_correction'
-            name='attandance_correction'
-                'request-history/'
-                views.student_requests,
-                name='student_request,
+         views.attandance_correction'
+        name='attandance_correction'
+         'request-history/'
+         views.student_requests,
+         name='student_request,
+           'profile/',
+            views.student_profile,
+            name='student_profile'
+                
         
     ),
 ]
