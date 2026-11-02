@@ -72,3 +72,53 @@ def student_complaint(request):
         request,
         'student_portal/complaint.html'
     )
+from datetime import date
+from .models import AttendanceCorrection
+
+
+@login_required
+def attendance_correction(request):
+
+    student = get_object_or_404(
+        StudentProfile,
+        user=request.user,
+        is_verified=True
+    )
+
+    if request.method == "POST":
+
+        attendance_date = request.POST.get('attendance_date')
+        subject = request.POST.get('subject', '').strip()
+        reason = request.POST.get('reason', '').strip()
+
+        try:
+            selected_date = date.fromisoformat(attendance_date)
+
+            if selected_date > date.today():
+                messages.error(request, "Future dates are not allowed.")
+
+            elif not subject or not reason:
+                messages.error(request, "Please fill all fields.")
+
+            else:
+                AttendanceCorrection.objects.create(
+                    student=student,
+                    attendance_date=selected_date,
+                    subject=subject,
+                    reason=reason
+                )
+
+                messages.success(
+                    request,
+                    "Correction request submitted!"
+                )
+
+                return redirect('student_dashboard')
+
+        except (ValueError, TypeError):
+            messages.error(request, "Please enter a valid date.")
+
+    return render(
+        request,
+        'student_portal/correction.html'
+    )
