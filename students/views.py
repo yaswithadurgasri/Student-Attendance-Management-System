@@ -31,3 +31,44 @@ def student_dashboard(request):
         'student_portal/dashboard.html',
         context
     )
+    from django.shortcuts import get_object_or_404
+from .models import StudentComplaint
+
+
+@login_required
+def student_complaint(request):
+
+    student = get_object_or_404(
+        StudentProfile,
+        user=request.user,
+        is_verified=True
+    )
+
+    if request.method == "POST":
+
+        complaint_to = request.POST.get('complaint_to')
+        subject = request.POST.get('subject')
+        description = request.POST.get('description')
+
+        if complaint_to not in ['staff', 'admin']:
+            messages.error(request, "Invalid complaint recipient.")
+            return redirect('student_complaint')
+
+        if not subject or not description:
+            messages.error(request, "Please fill all fields.")
+            return redirect('student_complaint')
+
+        StudentComplaint.objects.create(
+            student=student,
+            complaint_to=complaint_to,
+            subject=subject,
+            description=description
+        )
+
+        messages.success(request, "Complaint submitted successfully!")
+        return redirect('student_dashboard')
+
+    return render(
+        request,
+        'student_portal/complaint.html'
+    )
