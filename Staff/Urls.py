@@ -52,4 +52,25 @@ urlpatterns = [
         views.staff_settings,
         name="settings"
     ),
+    
+path("students/add/", views.staff_student_add, name="student_add"),
+
+path(
+    "students/edit/<int:student_id>/",
+    views.staff_student_edit,
+    name="student_edit"
+),
+
+path(
+    "students/delete/<int:student_id>/",
+    views.staff_student_delete,
+    name="student_delete"
+),
+
+path(
+    "students/search/",
+    views.staff_student_search,
+    name="student_search"
+),
+    
 ]
