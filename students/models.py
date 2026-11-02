@@ -8,3 +8,40 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.student_id} - {self.name}"
+        class StudentComplaint(models.Model):
+
+    COMPLAINT_TYPES = [
+        ('staff', 'Staff'),
+        ('admin', 'Admin'),
+    ]
+
+    STATUS_CHOICES = [
+        ('Submitted', 'Submitted'),
+        ('Under Review', 'Under Review'),
+        ('Resolved', 'Resolved'),
+    ]
+
+    student = models.ForeignKey(
+        StudentProfile,
+        on_delete=models.CASCADE
+    )
+
+    complaint_to = models.CharField(
+        max_length=10,
+        choices=COMPLAINT_TYPES
+    )
+
+    subject = models.CharField(max_length=150)
+
+    description = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Submitted'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.subject
