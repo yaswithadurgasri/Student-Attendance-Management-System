@@ -13,6 +13,9 @@ urlpatterns = [
         'correction/',
             views.attandance_correction'
             name='attandance_correction'
+                'request-history/'
+                views.student_requests,
+                name='student_request,
         
     ),
 ]
