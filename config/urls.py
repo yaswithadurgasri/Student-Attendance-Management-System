@@ -5,6 +5,7 @@ URL configuration for config project.
 
 from django.contrib import admin
 from django.urls import path, include
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('admin-dashboard/', include('dashboard.urls')),
     path('student/', include('student.urls')),
     path('logout/',auth_views.logoutViews.as_views(),),
+    path("staff/", include("staff.urls")),
 ]
