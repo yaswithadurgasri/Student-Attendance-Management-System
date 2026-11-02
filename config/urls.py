@@ -11,4 +11,5 @@ urlpatterns = [
     path('attendance/', include('attendance.urls')),
     path('admin-dashboard/', include('dashboard.urls')),
     path('student/', include('student.urls')),
+    path('logout/',auth_views.logoutViews.as_views(),),
 ]
