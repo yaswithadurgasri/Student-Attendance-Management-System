@@ -231,4 +231,144 @@ def staff_settings(request):
     return render(request, "staff/settings.html", {
         "staff": staff
     })
-      
+
+
+from django import forms
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+
+
+class StudentForm(forms.ModelForm):
+
+    class Meta:
+        model = Student
+        fields = [
+            "student_id",
+            "name",
+            "department",
+            "section",
+            "academic_year",
+            "email",
+            "phone",
+            "is_active",
+        ]
+
+
+def get_assigned_students(staff):
+    return Student.objects.filter(
+        department=staff.department,
+        section=staff.section
+    )
+
+
+@login_required
+def staff_student_add(request):
+    staff = get_staff_profile(request.user)
+
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+
+        if form.is_valid():
+            student = form.save(commit=False)
+
+            # Staff can add students only to their assigned section.
+            student.department = staff.department
+            student.section = staff.section
+            student.academic_year = staff.academic_year
+            student.save()
+
+            messages.success(request, "Student added successfully!")
+            return redirect("staff:dashboard")
+    else:
+        form = StudentForm()
+
+    form.fields["department"].queryset = (
+        type(staff.department).objects.filter(pk=staff.department_id)
+        if staff.department_id else type(staff.department).objects.none()
+    )
+
+    form.fields["section"].queryset = (
+        type(staff.section).objects.filter(pk=staff.section_id)
+        if staff.section_id else type(staff.section).objects.none()
+    )
+
+    return render(request, "staff/student_form.html", {
+        "form": form,
+        "staff": staff,
+        "page_title": "Add Student"
+    })
+
+
+@login_required
+def staff_student_edit(request, student_id):
+    staff = get_staff_profile(request.user)
+
+    student = get_object_or_404(
+        get_assigned_students(staff),
+        pk=student_id
+    )
+
+    if request.method == "POST":
+        form = StudentForm(request.POST, instance=student)
+
+        if form.is_valid():
+            updated_student = form.save(commit=False)
+
+            # Prevent moving a student outside assigned section.
+            updated_student.department = staff.department
+            updated_student.section = staff.section
+            updated_student.academic_year = staff.academic_year
+            updated_student.save()
+
+            messages.success(request, "Student updated successfully!")
+            return redirect("staff:dashboard")
+    else:
+        form = StudentForm(instance=student)
+
+    form.fields["department"].queryset = Department.objects.filter(
+        pk=staff.department_id
+    )
+    form.fields["section"].queryset = Section.objects.filter(
+        pk=staff.section_id
+    )
+
+    return render(request, "staff/student_form.html", {
+        "form": form,
+        "staff": staff,
+        "page_title": "Edit Student"
+    })
+
+
+@login_required
+@require_POST
+def staff_student_delete(request, student_id):
+    staff = get_staff_profile(request.user)
+
+    student = get_object_or_404(
+        get_assigned_students(staff),
+        pk=student_id
+    )
+
+    student.delete()
+
+    messages.success(request, "Student deleted successfully!")
+    return redirect("staff:dashboard")
+
+
+@login_required
+def staff_student_search(request):
+    staff = get_staff_profile(request.user)
+
+    query = request.GET.get("q", "").strip()
+
+    students = get_assigned_students(staff).filter(
+        Q(name__icontains=query) |
+        Q(student_id__icontains=query)
+    ) if query else get_assigned_students(staff)
+
+    return render(request, "staff/student_search.html", {
+        "staff": staff,
+        "students": students,
+        "query": query
+    })
+        
