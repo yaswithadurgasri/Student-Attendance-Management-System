@@ -480,5 +480,149 @@ def staff_attendance_history(request):
         "staff": staff,
         "records": records,
     })
+from django import forms
+
+
+class PerformanceForm(forms.ModelForm):
+
+    class Meta:
+        model = PerformanceRemark
+        fields = [
+            "subject",
+            "academic_score",
+            "participation",
+            "assignment_performance",
+            "behaviour_remarks",
+            "improvement_suggestions",
+        ]
+
+        widgets = {
+            "participation": forms.Textarea(
+                attrs={"rows": 3}
+            ),
+            "assignment_performance": forms.Textarea(
+                attrs={"rows": 3}
+            ),
+            "behaviour_remarks": forms.Textarea(
+                attrs={"rows": 3}
+            ),
+            "improvement_suggestions": forms.Textarea(
+                attrs={"rows": 3}
+            ),
+        }
+
+
+@login_required
+def staff_performance(request):
+    staff = get_staff_profile(request.user)
+
+    records = PerformanceRemark.objects.filter(
+        student__section=staff.section,
+        student__department=staff.department,
+        staff=staff
+    ).select_related("student", "subject").order_by("-created_at")
+
+    return render(request, "staff/performance.html", {
+        "staff": staff,
+        "records": records,
+    })
+
+
+@login_required
+def staff_add_performance(request, student_id):
+    staff = get_staff_profile(request.user)
+
+    student = get_object_or_404(
+        get_assigned_students(staff),
+        pk=student_id
+    )
+
+    if request.method == "POST":
+        form = PerformanceForm(request.POST)
+
+        if form.is_valid():
+            record = form.save(commit=False)
+            record.student = student
+            record.staff = staff
+
+            # Only subjects assigned to this staff member.
+            if (
+                record.subject
+                and not staff.subjects.filter(
+                    pk=record.subject.pk
+                ).exists()
+            ):
+                form.add_error(
+                    "subject",
+                    "This subject is not assigned to you."
+                )
+            else:
+                record.save()
+                messages.success(
+                    request,
+                    "Performance saved successfully!"
+                )
+                return redirect("staff:performance")
+    else:
+        form = PerformanceForm()
+
+    form.fields["subject"].queryset = staff.subjects.all()
+
+    return render(request, "staff/performance_form.html", {
+        "staff": staff,
+        "student": student,
+        "form": form,
+    })
+
+
+@login_required
+def staff_edit_performance(request, record_id):
+    staff = get_staff_profile(request.user)
+
+    record = get_object_or_404(
+        PerformanceRemark,
+        pk=record_id,
+        staff=staff,
+        student__section=staff.section,
+        student__department=staff.department
+    )
+
+    if request.method == "POST":
+        form = PerformanceForm(
+            request.POST,
+            instance=record
+        )
+
+        if form.is_valid():
+            updated_record = form.save(commit=False)
+
+            if (
+                updated_record.subject
+                and not staff.subjects.filter(
+                    pk=updated_record.subject.pk
+                ).exists()
+            ):
+                form.add_error(
+                    "subject",
+                    "This subject is not assigned to you."
+                )
+            else:
+                updated_record.save()
+                messages.success(
+                    request,
+                    "Performance updated successfully!"
+                )
+                return redirect("staff:performance")
+    else:
+        form = PerformanceForm(instance=record)
+
+    form.fields["subject"].queryset = staff.subjects.all()
+
+    return render(request, "staff/performance_form.html", {
+        "staff": staff,
+        "student": record.student,
+        "form": form,
+    })
+            
                 
         
