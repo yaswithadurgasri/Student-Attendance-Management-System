@@ -9,6 +9,7 @@ from django.db.models import Avg, Count, Q
 
 from .models import (
     StaffProfile,
+    Department,
     Student,
     Attendance,
     PerformanceRemark,
