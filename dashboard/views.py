@@ -10,7 +10,7 @@ from .models import (
     Attendance,
     Complaint
 )
-
+from Staff.models import Complaint as StaffComplaint
 from .forms import (
     DepartmentForm,
     StudentForm,
@@ -68,6 +68,11 @@ def home(request):
         )[:100],
 
         "complaints": Complaint.objects.all(),
+        "staff_complaints": StaffComplaint.objects.select_related(
+    "submitted_by",
+    "student",
+    "target_teacher"
+).all().order_by("-created_at"),
 
         "total_students": Student.objects.count(),
 
