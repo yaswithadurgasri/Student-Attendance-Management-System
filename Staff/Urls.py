@@ -102,6 +102,25 @@ path(
     views.staff_edit_performance,
     name="edit_performance"
 ),
+    
+path(
+    "complaints/",
+    views.staff_complaints,
+    name="complaints"
+),
+
+path(
+    "complaints/update/<int:complaint_id>/",
+    views.staff_update_complaint,
+    name="update_complaint"
+),
+
+path(
+    "complaints/submit/",
+    views.staff_submit_complaint,
+    name="submit_complaint"
+),
+    
 
     
     
