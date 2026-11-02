@@ -372,4 +372,113 @@ def staff_student_search(request):
         "students": students,
         "query": query
     })
+    
+from datetime import date
+from django.db import transaction
+from django.utils import timezone
+
+
+@login_required
+def staff_attendance(request):
+    staff = get_staff_profile(request.user)
+
+    students = get_assigned_students(staff).filter(
+        is_active=True
+    )
+
+    today = timezone.localdate()
+
+    if request.method == "POST":
+        attendance_date = request.POST.get("date") or str(today)
+
+        try:
+            attendance_date = date.fromisoformat(attendance_date)
+        except ValueError:
+            messages.error(request, "Invalid attendance date.")
+            return redirect("staff:attendance")
+
+        with transaction.atomic():
+            for student in students:
+                status = request.POST.get(
+                    f"status_{student.pk}"
+                )
+
+                if status not in ["PRESENT", "ABSENT", "LATE"]:
+                    continue
+
+                reason = request.POST.get(
+                    f"reason_{student.pk}", ""
+                )
+
+                Attendance.objects.update_or_create(
+                    student=student,
+                    date=attendance_date,
+                    defaults={
+                        "status": status,
+                        "method": "MANUAL",
+                        "marked_by": staff,
+                        "manual_reason": reason,
+                    }
+                )
+
+        messages.success(
+            request, "Attendance saved successfully!"
+        )
+        return redirect("staff:attendance")
+
+    records = Attendance.objects.filter(
+        student__in=students,
+        date=today
+    )
+
+    attendance_map = {
+        record.student_id: record
+        for record in records
+    }
+
+    return render(request, "staff/attendance.html", {
+        "staff": staff,
+        "students": students,
+        "attendance_map": attendance_map,
+        "today": today,
+    })
+
+
+@login_required
+def staff_qr_attendance(request):
+    staff = get_staff_profile(request.user)
+
+    # QR verification must be completed by a secure,
+    # server-side location and token validation flow.
+    return render(request, "staff/qr_attendance.html", {
+        "staff": staff,
+        "message": "QR attendance verification"
+    })
+
+
+@login_required
+def staff_attendance_history(request):
+    staff = get_staff_profile(request.user)
+
+    records = Attendance.objects.filter(
+        student__department=staff.department,
+        student__section=staff.section
+    ).select_related(
+        "student", "marked_by"
+    ).order_by("-date")
+
+    selected_date = request.GET.get("date")
+
+    if selected_date:
+        try:
+            selected_date = date.fromisoformat(selected_date)
+            records = records.filter(date=selected_date)
+        except ValueError:
+            messages.error(request, "Invalid date.")
+
+    return render(request, "staff/attendance_history.html", {
+        "staff": staff,
+        "records": records,
+    })
+                
         
