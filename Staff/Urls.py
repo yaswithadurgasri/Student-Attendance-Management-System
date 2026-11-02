@@ -73,4 +73,17 @@ path(
     name="student_search"
 ),
     
+path(
+    "attendance/",
+    views.staff_attendance,
+    name="attendance"
+),
+
+path(
+    "attendance/qr/",
+    views.staff_qr_attendance,
+    name="qr_attendance"
+),
+    
+    
 ]
