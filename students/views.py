@@ -122,3 +122,17 @@ def attendance_correction(request):
         request,
         'student_portal/correction.html'
     )
+    @login_required
+def student_profile(request):
+
+    student = get_object_or_404(
+        StudentProfile,
+        user=request.user,
+        is_verified=True
+    )
+
+    return render(
+        request,
+        'student_portal/profile.html',
+        {'student': student}
+    )
