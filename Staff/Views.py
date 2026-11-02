@@ -623,6 +623,90 @@ def staff_edit_performance(request, record_id):
         "student": record.student,
         "form": form,
     })
+    
+from django.views.decorators.http import require_POST
+
+
+@login_required
+def staff_complaints(request):
+    staff = get_staff_profile(request.user)
+
+    complaints = Complaint.objects.filter(
+        target_teacher=staff,
+        recipient="TEACHER"
+    ).order_by("-created_at")
+
+    return render(request, "staff/complaints.html", {
+        "staff": staff,
+        "complaints": complaints
+    })
+
+
+@login_required
+@require_POST
+def staff_update_complaint(request, complaint_id):
+    staff = get_staff_profile(request.user)
+
+    complaint = get_object_or_404(
+        Complaint,
+        pk=complaint_id,
+        target_teacher=staff,
+        recipient="TEACHER"
+    )
+
+    action = request.POST.get("action")
+
+    if action == "resolve":
+        complaint.status = "RESOLVED"
+        complaint.resolution_notes = request.POST.get(
+            "resolution_notes", ""
+        )
+
+    elif action == "forward":
+        complaint.recipient = "ADMIN"
+        complaint.status = "FORWARDED"
+        complaint.target_teacher = None
+
+    else:
+        messages.error(request, "Invalid complaint action.")
+        return redirect("staff:complaints")
+
+    complaint.save()
+
+    messages.success(request, "Complaint updated successfully!")
+    return redirect("staff:complaints")
+
+
+@login_required
+@require_POST
+def staff_submit_complaint(request):
+    staff = get_staff_profile(request.user)
+
+    subject = request.POST.get("subject", "").strip()
+    description = request.POST.get("description", "").strip()
+    category = request.POST.get("category", "").strip()
+
+    if not subject or not description or not category:
+        messages.error(request, "Please fill all complaint fields.")
+        return redirect("staff:complaints")
+
+    Complaint.objects.create(
+        submitted_by=request.user,
+        source_role="STAFF",
+        recipient="ADMIN",
+        category=category,
+        subject=subject,
+        description=description,
+        status="PENDING"
+    )
+
+    messages.success(
+        request,
+        "Your complaint has been submitted to Admin."
+    )
+
+    return redirect("staff:complaints")
+    
             
                 
         
