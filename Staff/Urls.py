@@ -85,5 +85,24 @@ path(
     name="qr_attendance"
 ),
     
+path(
+    "performance/",
+    views.staff_performance,
+    name="performance"
+),
+
+path(
+    "performance/add/<int:student_id>/",
+    views.staff_add_performance,
+    name="add_performance"
+),
+
+path(
+    "performance/edit/<int:record_id>/",
+    views.staff_edit_performance,
+    name="edit_performance"
+),
+
+    
     
 ]
